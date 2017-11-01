@@ -1,0 +1,36 @@
+Create random board
+	for ships from longest to shortest:
+		while a valid location is not found:
+			x = choose random number between 0 and 7
+			y = choose random number between 0 and 7
+			orientation = x*y mod 4						//todo: check if this is evenly distributed; it seems like 0 is overrepresented
+			while a valid orientation is not found:
+				if no collision:
+					a valid location was found
+					a valid orientation was found
+				else:
+					orientation = orientation++ % 4;
+					if orientation == x*y mod 4:
+						// we have checked every orientation so this location doesn't work
+						a valid location was not found
+						break
+
+
+
+
+
+
+ship object:
+	length
+	x
+	y
+	orientation
+
+
+Cell object:
+	is targeted?
+	is occupied?
+
+Board object:
+	contains an array of 64 cell objects
+	//contains all ship objects				//redundant, the cells have "occupied" flags which are good enough
