@@ -34,3 +34,24 @@ Cell object:
 Board object:
 	contains an array of 64 cell objects
 	//contains all ship objects				//redundant, the cells have "occupied" flags which are good enough
+
+
+
+
+
+
+main
+	create empty board
+	initialize LCD
+	initialize GLCD
+	initialize usart
+	forever:
+		if transmitter:
+			print that it's your turn on the LCD
+			watch for button presses
+			when they are pressed, send targeting information to the receiver
+			switch to reciever mode
+		if reciever:
+			print that it's their turn on the LCD
+			watch for USART comms
+			respond correctly when it happens

@@ -4,6 +4,7 @@
 #include <time.h>
 #include <stdlib.h>
 // for random number generation
+#include "bool.h"
 
 typedef struct ship {
 	// 0-8 for board position

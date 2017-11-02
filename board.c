@@ -2,7 +2,7 @@
 
 
 Board create_board(void){
-	Board board;
+	Board board = blank_board();
 	unsigned char lengths[] = {4, 3, 3, 2};
 	Ship ships[4];
 	bool locationFound = false;
