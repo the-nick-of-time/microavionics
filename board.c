@@ -46,6 +46,3 @@ Board blank_board(void){
 	}
 	return board;
 }
-
-// bool does_not_collide(Board board, Ship ship);
-// Board place_ship(Board board, Ship ship);
