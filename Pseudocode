@@ -50,8 +50,10 @@ main
 			print that it's your turn on the LCD
 			watch for button presses
 			when they are pressed, send targeting information to the receiver
-			switch to reciever mode
-		if reciever:
+			receive hit or miss response
+			mark that on the board
+			switch to receiver mode
+		if receiver:
 			print that it's their turn on the LCD
 			watch for USART comms
-			respond correctly when it happens
+			respond with hit or miss
