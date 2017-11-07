@@ -6,13 +6,16 @@
 // for random number generation
 #include "bool.h"
 
+#define WIDTH 8
+#define HEIGHT 8
+
 typedef struct ship {
 	// 0-8 for board position
 	unsigned char x:3;
 	unsigned char y:3;
 	// 2-4 but it might be expanded to 5 to be like the real game
 	unsigned char length:3;
-	// 0-3 for NESW or whatever
+	// 0-3 for NESW
 	unsigned char orientation:2;
 } Ship;
 
@@ -23,8 +26,21 @@ typedef struct cell {
 } Cell;
 
 typedef struct board {
+	/*
+	0----W
+	|    |
+	|    |
+	H----|
+	The board origin is in the top left
+	Y is positive downwards
+	X is positive rightwards
+
+	row-major list of cells
+	meaning the indices are like this:
+	0 1 2 3 4 5 6 7
+	8 9...
+	*/
 	Cell cells[64];
-	// Ship ships[];	// unnecessary?
 } Board;
 
 // Creates a board with ships placed on it randomly
@@ -37,6 +53,6 @@ Board blank_board(void);
 bool is_valid(Board* board, Ship ship);
 
 // Modifies board in place to add "occupied" flags to the cells that the ship is taking up
-place_ship(Board* board, Ship ship);
+void place_ship(Board* board, Ship ship);
 
 #endif
