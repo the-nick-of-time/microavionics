@@ -9,7 +9,7 @@
 #define WIDTH 8
 #define HEIGHT 8
 
-typedef struct ship {
+typedef struct {
 	// 0-8 for board position
 	unsigned char x:3;
 	unsigned char y:3;
@@ -19,13 +19,13 @@ typedef struct ship {
 	unsigned char orientation:2;
 } Ship;
 
-typedef struct cell {
+typedef struct {
 	// This should make them 1 bit long each looking at mplab's .h files
 	unsigned targeted:1;
 	unsigned occupied:1;
 } Cell;
 
-typedef struct board {
+typedef struct {
 	/*
 	0----W
 	|    |
