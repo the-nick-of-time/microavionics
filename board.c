@@ -1,4 +1,6 @@
 #include "board.h"
+// FOR DEBUGGING
+#include <stdio.h>
 
 
 Board create_board(void){
@@ -10,8 +12,8 @@ Board create_board(void){
 	Ship ships[4];
 	bool locationFound = false;
 	bool orientationFound = false;
-	unsigned char x, y, orientation;
-	for (size_t i = 0; i < 4; i++) {
+	unsigned char x, y, orientation, i;
+	for (i = 0; i < 4; i++) {
 		ships[i].length = lengths[i];
 		while (!locationFound) {
 			// select x and y randomly
@@ -41,6 +43,9 @@ Board create_board(void){
 		}
 		// The ship location and orientation is okay so add it to the board
 		place_ship(&board, ships[i]);
+		// Reset variables for next run
+		locationFound = false;
+		orientationFound = false;
 	}
 	return board;
 }
@@ -68,16 +73,16 @@ void advance(int* row, int* col, int orientation) {
 	*/
 	switch (orientation) {
 		case 0: //north
-			*row--;
+			(*row)--;
 			break;
 		case 1: //east
-			*col++;
+			(*col)++;
 			break;
 		case 2: //south
-			*row++;
+			(*row)++;
 			break;
 		case 3: //west
-			*col--;
+			(*col)--;
 			break;
 	}
 }
@@ -100,7 +105,7 @@ bool is_valid(Board* board, Ship ship){
 	Cell* c;
 	int row = ship.y, col = ship.x;
 	for (char i = 0; i < ship.length; i++) {
-		if (row > HEIGHT || row < 0 || col > WIDTH || col < 0){
+		if (row >= HEIGHT || row < 0 || col >= WIDTH || col < 0){
 			// off the board
 			return false;
 		}
