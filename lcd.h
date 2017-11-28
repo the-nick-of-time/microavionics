@@ -5,14 +5,11 @@
 #include "bool.h"
 #include <delays.h>
 
-// Initialize the LCD, return true when done successfully
-bool startup_lcd(void);
-
 // Initialize the GLCD, return true when done successfully
 bool startup_glcd(void);
 
-// Write a string to the LCD starting at the cursor position given
-bool write_lcd_string(char* s, unsigned char cursor);
+// Print a string on the GLCD starting at x and y
+bool write_string(char* string, int x, int y);
 
 // Draws the whole board, probably will only be called at the beginning on the empty board
 bool draw_board(Board* board);
