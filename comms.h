@@ -3,6 +3,11 @@
 
 #include "targeting.h"
 #include "bool.h"
+#include "board.h"
+
+#define BYTE_RECIEVED PIR1bits.RC1IF
+#define FRAMING_ERROR RCSTA1bits.FERR
+#define OVERRUN_ERROR RCSTA1bits.OERR
 
 // Tries tp a usart communication line to the other board and returns whether it was successful
 bool startup_usart(void);
@@ -18,7 +23,11 @@ bool send_target(Target tosend);
 Target receive_target(void);
 
 // Confirmation says that 1) the data was successfully received and 2) whether the shot was a hit or a miss
-bool send_confirmation(Board* board, Target targeted);
-bool receive_confirmation(Board* board, Target targeted);
+typedef struct {
+	unsigned hit:1;
+	unsigned error:7;
+} Handshake;
+Handshake send_confirmation(Board* board, Target targeted);
+Handshake receive_confirmation(Board* board, Target targeted);
 
 #endif
