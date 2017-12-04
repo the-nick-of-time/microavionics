@@ -5,9 +5,6 @@
 #include "comms.h"
 #include "bool.h"
 
-#define MY_TURN 1
-#define THEIR_TURN 0
-
 int main(int argc, char const *argv[]) {
 	// 1 for your turn/transmit mode; 0 for the other person's turn/recieve mode
 	bool mode;
@@ -24,14 +21,14 @@ int main(int argc, char const *argv[]) {
 		if (mode == MY_TURN) {
 			target = determine_target();
 			send_target(target);
-			receive_confirmation(&theirBoard, target);
+			receive_confirmation(&theirBoard, target); // if there is an error, it will get stuck forever
 			mode = rx_mode();
 		}
 		else {
 			do {
 				target = receive_target();
 			} while (target.error);
-			send_confirmation(&myBoard, target);
+			send_confirmation(&myBoard, target); // if there is an error, it will get stuck forever
 			mode = tx_mode();
 		}
 	}
