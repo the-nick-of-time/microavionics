@@ -23,11 +23,14 @@ bool send_target(Target tosend);
 Target receive_target(void);
 
 // Confirmation says that 1) the data was successfully received and 2) whether the shot was a hit or a miss
-typedef struct {
+typedef struct Handshake {
 	unsigned hit:1;
-	unsigned error:7;
+	unsigned gameover:1;
+	unsigned error:6;
 } Handshake;
+// Given your own board and the cell that your opponent is targeting, mark that cell as targeted, determine whether the game is over, and send a Handshake to the other player
 Handshake send_confirmation(Board* board, Target targeted);
+// Given your model of the opponent's board and the cell that you targeted, mark that cell as targeted, and mark it as a successful hit if that is the case
 Handshake receive_confirmation(Board* board, Target targeted);
 
 #endif
