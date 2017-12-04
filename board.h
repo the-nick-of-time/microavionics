@@ -40,7 +40,7 @@ typedef struct {
 	0 1 2 3 4 5 6 7
 	8 9...
 	*/
-	Cell cells[64];
+	Cell cells[WIDTH*HEIGHT];
 } Board;
 
 // Creates a board with ships placed on it randomly
