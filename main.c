@@ -28,7 +28,9 @@ int main(int argc, char const *argv[]) {
 			mode = rx_mode();
 		}
 		else {
-			target = receive_target();
+			do {
+				target = receive_target();
+			} while (target.error);
 			send_confirmation(&myBoard, target);
 			mode = tx_mode();
 		}
