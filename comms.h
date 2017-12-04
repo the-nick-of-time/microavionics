@@ -5,6 +5,9 @@
 #include "bool.h"
 #include "board.h"
 
+#define MY_TURN 1
+#define THEIR_TURN 0
+
 #define BYTE_RECIEVED PIR1bits.RC1IF
 #define FRAMING_ERROR RCSTA1bits.FERR
 #define OVERRUN_ERROR RCSTA1bits.OERR

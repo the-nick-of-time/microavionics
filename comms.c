@@ -28,14 +28,14 @@ bool tx_mode(void) {
 	PIE1bits.TX1IE = 1;
   // Turn off recieve
 	PIE1bits.RC1IE = 0;
-	return true;
+	return MY_TURN;
 }
 
 bool rx_mode(void) {
 	PIE1bits.RC1IE = 1;
   // Turn off send
 	PIE1bits.TX1IE = 0;
-	return true;
+	return THEIR_TURN;
 }
 
 
@@ -65,4 +65,65 @@ Target receive_target(void) {
 		temp.error = 0b00;
 		return temp;
 	}
+}
+
+
+bool end_game(Board* board) {
+	int i;
+	Cell c;
+	for (i = 0; i < WIDTH*HEIGHT; i++) {
+		c = board->cells[i];
+		if (c.occupied && !c.targeted){
+			return false;
+		}
+	}
+	return true;
+}
+
+
+Handshake send_confirmation(Board* board, Target targeted) {
+	Cell c;
+	Handshake rv;
+	c = get_cell(board, targeted.row, targeted.col);
+	c.targeted = true;
+	if (c.occupied) {
+		rv.hit = true;
+	}
+	rv.gameover = end_game(board);
+	rv.error = 0;
+	// COPIED FROM SEND_TARGET
+	while (!PIR1bits.TX1IF) {}
+	TXREG1 = rv;
+	// /END COPIED CODE
+	return rv;
+}
+
+
+Handshake receive_confirmation(Board* board, Target targeted) {
+	Cell c;
+	Handshake h;
+  // MINOR MODIFICATIONS FROM RECEIVE_TARGET
+	PIR1bits.RC1IF = 0;
+	if (FRAMING_ERROR) {
+		// Clear and ignore due to framing error
+		h = RCREG1;
+		h.error = 0b01;
+		return h;
+	} else if (OVERRUN_ERROR) {
+    // Reset due to overflow
+		RCSTA1bits.CREN = 0;
+		RCSTA1bits.CREN = 1;
+		h.error = 0b10;
+		return h;
+	} else {
+		h = RCREG1;
+		h.error = 0b00;
+	}
+	// /END COPIED CODE
+	c = get_cell(board, targeted.row, targeted.col);
+	c.targeted = true;
+	if (h.hit) {
+		c.occupied = true;
+	}
+	return h;
 }
