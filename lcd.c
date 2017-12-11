@@ -1,6 +1,7 @@
 #include <p18cxxx.h>
 #include <delays.h>
 #include "lcd.h"
+#include "bool.h"
 
 /*
 NOTE TO MATT: lcd.h only defines the public-facing functions, you will likely need to define additional helper functions like one to draw one pixel on the GLCD at a specified location
@@ -70,6 +71,7 @@ bool startup_glcd(void){
     GLCD_DATA_TRIS = 0;
     
     InitGLCD();
+    return true;
 }
 // Print a string on the GLCD starting at x and y
 //bool write_string(char* string, int x, int y);
@@ -79,7 +81,7 @@ bool draw_board(Board* board){
     unsigned char i;
     unsigned char j;
     unsigned char mod;
-    for(i=0;i<128;i++){
+    for(i=0;i<64;i++){
         for(j=0;j<8;j++){
             SetCursor(i,j);
             mod = i%8;
@@ -237,6 +239,7 @@ void InitGLCD( void ){
     GLCD_RW_LAT = 0;
     GLCD_DATA_LAT = 0x3F;   // This command turns the GLCD on.
     Enable();
+    ClearGLCD();
 }
 
 /******************************************************************************

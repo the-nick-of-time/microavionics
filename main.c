@@ -5,6 +5,9 @@
 #include "comms.h"
 #include "bool.h"
 
+#pragma config FOSC=HS1, PWRTEN=ON, BOREN=ON, BORV=2, PLLCFG=OFF
+#pragma config WDTEN=OFF, CCP2MX=PORTC, XINST=OFF
+
 void main(void) {
 	// 1 for your turn/transmit mode; 0 for the other person's turn/recieve mode
 	bool mode;
@@ -16,10 +19,9 @@ void main(void) {
 	// keep on trying to start up things until they succeed
 	while (!startup_glcd()){}
 //	while (!startup_usart()){}
+    draw_board(&myBoard);
 	// main loop
 	while (1) {
-//		draw_board(&theirBoard);
-        draw_board(&myBoard);
 //		if (mode == MY_TURN) {
 //			target = determine_target();
 //			send_target(target);
