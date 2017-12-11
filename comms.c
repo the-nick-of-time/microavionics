@@ -1,5 +1,8 @@
+#include <p18cxxx.h>
 #include "comms.h"
+#include "board.h"
 
+#define BR_9600 103
 
 bool startup_usart(void){
 	// Set tris bits
@@ -42,7 +45,7 @@ bool rx_mode(void) {
 bool send_target(Target t) {
   // TARGET NEEDS TO BE <=8 BITS, I DON'T FORSEE IT CHANGING THOUGH SO IT SHOULD BE FINE
 	while (!PIR1bits.TX1IF) {}
-	TXREG1 = t;
+	TXREG1 = (unsigned char) t;
 	return true;
 }
 
@@ -100,13 +103,13 @@ Handshake send_confirmation(Board* board, Target targeted) {
 
 
 Handshake receive_confirmation(Board* board, Target targeted) {
-	Cell c;
+	Cell* c;
 	Handshake h;
   // MINOR MODIFICATIONS FROM RECEIVE_TARGET
 	PIR1bits.RC1IF = 0;
 	if (FRAMING_ERROR) {
 		// Clear and ignore due to framing error
-		h = RCREG1;
+		h = (Handshake) RCREG1;
 		h.error = 0b01;
 		return h;
 	} else if (OVERRUN_ERROR) {
@@ -121,9 +124,9 @@ Handshake receive_confirmation(Board* board, Target targeted) {
 	}
 	// /END COPIED CODE
 	c = get_cell(board, targeted.row, targeted.col);
-	c.targeted = true;
+	c->targeted = true;
 	if (h.hit) {
-		c.occupied = true;
+		c->occupied = true;
 	}
 	return h;
 }

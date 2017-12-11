@@ -4,15 +4,16 @@
 
 
 Board create_board(void){
-	// Seed the RNG
-	srand(time(NULL));
-	Board board = blank_board();
+	Board board;
 	// In the real game we have 5, 4, 3, 3, 3, 2
 	unsigned char lengths[] = {4, 3, 3, 2};
 	Ship ships[4];
 	bool locationFound = false;
 	bool orientationFound = false;
 	unsigned char x, y, orientation, i;
+    // Seed the RNG
+	srand(1029348);
+    board = blank_board();
 	for (i = 0; i < 4; i++) {
 		ships[i].length = lengths[i];
 		while (!locationFound) {
@@ -53,7 +54,8 @@ Board create_board(void){
 
 Board blank_board(void){
 	Board board;
-	for (size_t i = 0; i < 64; i++) {
+    char i;
+	for (i = 0; i < 64; i++) {
 		board.cells[i].occupied = false;
 		board.cells[i].targeted = false;
 	}
@@ -92,7 +94,8 @@ void place_ship(Board* board, Ship ship){
 	/* Mark the cells on the board that are occupied by the ship */
 	Cell* c;
 	int row = ship.y, col = ship.x;
-	for (char i = 0; i < ship.length; i++) {
+    char i;
+	for (i = 0; i < ship.length; i++) {
 		c = get_cell(board, row, col);
 		c->occupied = true;
 		advance(&row, &col, ship.orientation);
@@ -104,7 +107,8 @@ bool is_valid(Board* board, Ship ship){
 	/* Checks whether the ship can fit on the board in its current location and orientation */
 	Cell* c;
 	int row = ship.y, col = ship.x;
-	for (char i = 0; i < ship.length; i++) {
+    char i;
+	for (i = 0; i < ship.length; i++) {
 		if (row >= HEIGHT || row < 0 || col >= WIDTH || col < 0){
 			// off the board
 			return false;

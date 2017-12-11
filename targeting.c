@@ -1,3 +1,4 @@
+#include <p18cxxx.h>
 #include "targeting.h"
 #include "bool.h"
 

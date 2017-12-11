@@ -2,6 +2,7 @@
 #define LCD
 
 #include "targeting.h"
+#include "board.h"
 #include "bool.h"
 #include <delays.h>
 

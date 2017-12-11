@@ -1,7 +1,6 @@
 #ifndef BOARD
 #define BOARD
 
-#include <time.h>
 #include <stdlib.h>
 // for random number generation
 #include "bool.h"
@@ -54,5 +53,8 @@ bool is_valid(Board* board, Ship ship);
 
 // Modifies board in place to add "occupied" flags to the cells that the ship is taking up
 void place_ship(Board* board, Ship ship);
+
+// Gets a cell by row, col location
+Cell* get_cell(Board* board, int row, int col);
 
 #endif

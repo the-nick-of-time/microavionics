@@ -48,8 +48,19 @@ NOTE TO MATT: lcd.h only defines the public-facing functions, you will likely ne
 static const unsigned char EnableDelayCount_ = 2; // 5 us delay
 static const unsigned char DataDelayCount_ = 4; // 1 us delay
 
+
+void WriteData(unsigned char data);
+void Enable( void );
+void InitGLCD( void );
+void SetColumn(unsigned char col);
+void SetPage(unsigned char page);
+void SetCursor(unsigned char col, unsigned char page);
+void ClearLine(unsigned char page, unsigned char half);
+void ClearGLCD( void );
+
+
 // Initialize the GLCD, return true when done successfully
-bool startup_glcd(void{
+bool startup_glcd(void){
     GLCD_CS0_TRIS = 0;
     GLCD_CS1_TRIS = 0;
     GLCD_RS_TRIS = 0;
@@ -106,14 +117,14 @@ bool draw_board(Board* board){
 
 // Draws an individual cell, probably called every time a target is chosen
 bool draw_cell(Cell cell, char x, char y){
-    unsigned char i;
+    unsigned char j;
     unsigned char col;
     unsigned char mod;
-    if (Cell.occupied){
+    if (cell.occupied){
         for(j=0;j<7;j++){
-            col = 8*x+j
+            col = 8*x+j;
             SetCursor(col,y);
-            mod = i%8;
+            mod = col%8;
             switch (mod) {
 			case 0:
 				WriteData(0x41+0x80);
@@ -143,9 +154,9 @@ bool draw_cell(Cell cell, char x, char y){
     }
     else{
         for(j=0;j<7;j++){
-            col = 8*x+j
+            col = 8*x+j;
             SetCursor(col,y);
-            mod = i%8;
+            mod = col%8;
             switch (mod) {
 			case 0:
 				WriteData(0x1C+0x80);
