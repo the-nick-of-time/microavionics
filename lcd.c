@@ -78,13 +78,99 @@ bool startup_glcd(void){
 
 // Draws the whole board, probably will only be called at the beginning on the empty board
 bool draw_board(Board* board){
-    unsigned char i;
+    unsigned char x;
+    unsigned char y;
+    Cell* cell;
+    for(x=0;x<8;x++){
+        for(y=0;y<8;y++){
+            cell = get_cell(board, y, x);
+            draw_cell(*cell, x, y);
+        }
+    }
+}
+
+// Draws an individual cell, probably called every time a target is chosen
+bool draw_cell(Cell cell, char x, char y){
     unsigned char j;
+    unsigned char col;
     unsigned char mod;
-    for(i=0;i<64;i++){
+    if (cell.targeted){
+        if (cell.occupied){
+            for(j=0;j<8;j++){
+                col = 8*x+j;
+                SetCursor(col,y);
+                mod = col%8;
+                switch (mod) {
+                case 0:
+                    WriteData(0x41+0x80);
+                    break;
+                case 1:
+                    WriteData(0x22+0x80);
+                    break;
+                case 2:
+                    WriteData(0x14+0x80);
+                    break;
+                case 3:
+                    WriteData(0x08+0x80);
+                    break;
+                case 4:
+                    WriteData(0x14+0x80);
+                    break;
+                case 5:
+                    WriteData(0x22+0x80);
+                    break;
+                case 6:
+                    WriteData(0x41+0x80);
+                    break;
+                case 7:
+                    WriteData(0xFF);
+                    break;
+                default:
+                    break;
+                }
+            }
+        }
+        else{
+            for(j=0;j<8;j++){
+                col = 8*x+j;
+                SetCursor(col,y);
+                mod = col%8;
+                switch (mod) {
+                case 0:
+                    WriteData(0x1C+0x80);
+                    break;
+                case 1:
+                    WriteData(0x22+0x80);
+                    break;
+                case 2:
+                    WriteData(0x41+0x80);
+                    break;
+                case 3:
+                    WriteData(0x41+0x80);
+                    break;
+                case 4:
+                    WriteData(0x41+0x80);
+                    break;
+                case 5:
+                    WriteData(0x22+0x80);
+                    break;
+                case 6:
+                    WriteData(0x1C+0x80);
+                    break;
+                case 7:
+                    WriteData(0xFF);
+                    break;
+                default:
+                    break;
+            }
+            }
+        }
+    }
+    else{
         for(j=0;j<8;j++){
-            SetCursor(i,j);
-            mod = i%8;
+            col = 8*x+j;
+            SetCursor(col,y);
+            mod = col%8;
             switch (mod) {
 			case 0:
 				WriteData(0x80);
@@ -112,79 +198,8 @@ bool draw_board(Board* board){
 				break;
 			default:
 				break;
-		}
-        }
-    }
-}
-
-// Draws an individual cell, probably called every time a target is chosen
-bool draw_cell(Cell cell, char x, char y){
-    unsigned char j;
-    unsigned char col;
-    unsigned char mod;
-    if (cell.occupied){
-        for(j=0;j<7;j++){
-            col = 8*x+j;
-            SetCursor(col,y);
-            mod = col%8;
-            switch (mod) {
-			case 0:
-				WriteData(0x41+0x80);
-				break;
-			case 1:
-				WriteData(0x22+0x80);
-				break;
-			case 2:
-				WriteData(0x14+0x80);
-				break;
-			case 3:
-				WriteData(0x08+0x80);
-				break;
-			case 4:
-				WriteData(0x14+0x80);
-				break;
-			case 5:
-				WriteData(0x22+0x80);
-				break;
-			case 6:
-				WriteData(0x41+0x80);
-				break;
-			default:
-				break;
-		}
-        }
-    }
-    else{
-        for(j=0;j<7;j++){
-            col = 8*x+j;
-            SetCursor(col,y);
-            mod = col%8;
-            switch (mod) {
-			case 0:
-				WriteData(0x1C+0x80);
-				break;
-			case 1:
-				WriteData(0x22+0x80);
-				break;
-			case 2:
-				WriteData(0x41+0x80);
-				break;
-			case 3:
-				WriteData(0x41+0x80);
-				break;
-			case 4:
-				WriteData(0x41+0x80);
-				break;
-			case 5:
-				WriteData(0x22+0x80);
-				break;
-			case 6:
-				WriteData(0x1C+0x80);
-				break;
-			default:
-				break;
-		}
-        }
+            }
+        }    
     }
 }
 
