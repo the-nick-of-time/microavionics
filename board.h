@@ -25,6 +25,11 @@ typedef struct {
 } Cell;
 
 typedef struct {
+  // 8 cells wide, fills 16 bits (4 times more space efficient than keeping them separate)
+	Cell cells[WIDTH];
+} Row;
+
+typedef struct {
 	/*
 	0----W
 	|    |
@@ -39,7 +44,7 @@ typedef struct {
 	0 1 2 3 4 5 6 7
 	8 9...
 	*/
-	Cell cells[WIDTH*HEIGHT];
+	Row rows[HEIGHT];
 } Board;
 
 // Creates a board with ships placed on it randomly

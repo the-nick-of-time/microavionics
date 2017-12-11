@@ -11,9 +11,9 @@ Board create_board(void){
 	bool locationFound = false;
 	bool orientationFound = false;
 	unsigned char x, y, orientation, i;
-    // Seed the RNG
+	// Seed the RNG
 	srand(1029348);
-    board = blank_board();
+	board = blank_board();
 	for (i = 0; i < 4; i++) {
 		ships[i].length = lengths[i];
 		while (!locationFound) {
@@ -64,7 +64,7 @@ Board blank_board(void){
 
 
 Cell* get_cell(Board* board, int row, int col){
-	return &(board->cells[row * WIDTH + col]);
+	return &(Board->rows[row].cells[width])
 }
 
 void advance(int* row, int* col, int orientation) {
