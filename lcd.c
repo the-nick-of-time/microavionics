@@ -137,25 +137,25 @@ bool draw_cell(Cell cell, char x, char y){
                 mod = col%8;
                 switch (mod) {
                 case 0:
-                    WriteData(0x1C+0x80);
+                    WriteData(0x80);
                     break;
                 case 1:
-                    WriteData(0x22+0x80);
+                    WriteData(0x1C+0x80);
                     break;
                 case 2:
-                    WriteData(0x41+0x80);
-                    break;
-                case 3:
-                    WriteData(0x41+0x80);
-                    break;
-                case 4:
-                    WriteData(0x41+0x80);
-                    break;
-                case 5:
                     WriteData(0x22+0x80);
                     break;
-                case 6:
+                case 3:
+                    WriteData(0x22+0x80);
+                    break;
+                case 4:
+                    WriteData(0x22+0x80);
+                    break;
+                case 5:
                     WriteData(0x1C+0x80);
+                    break;
+                case 6:
+                    WriteData(0x80);
                     break;
                 case 7:
                     WriteData(0xFF);
