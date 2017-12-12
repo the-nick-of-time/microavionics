@@ -34,18 +34,22 @@ void main(void) {
 //        cell = get_cell(&myBoard, target.row, target.col);
 //        cell->targeted = true;
         send_target(target);
-//		if (mode == MY_TURN) {
-//			target = determine_target();
-//			send_target(target);
+		if (mode == MY_TURN) {
+			target = determine_target();
+			send_target(target);
 //			receive_confirmation(&theirBoard, target); // if there is an error, it will get stuck forever
 //			mode = rx_mode();
-//		}
-//		else {
-//			do {
-//				target = receive_target();
-//			} while (target.error);
+            mode = THEIR_TURN;
+		}
+		else {
+			do {
+				target = receive_target();
+			} while (target.error);
 //			send_confirmation(&myBoard, target); // if there is an error, it will get stuck forever
 //			mode = tx_mode();
-//		}
+            cell = get_cell(&myBoard, target.row, target.col);
+            cell->targeted = true;
+            mode = MY_TURN;
+		}
 	}
 }
