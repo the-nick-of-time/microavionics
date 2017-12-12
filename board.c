@@ -54,17 +54,23 @@ Board create_board(void){
 
 Board blank_board(void){
 	Board board;
-    char i;
-	for (i = 0; i < 64; i++) {
-		board.cells[i].occupied = false;
-		board.cells[i].targeted = false;
+    Cell* cell;
+    char x, y;
+	for (x = 0; x < WIDTH; x++) {
+        for (y = 0; y < HEIGHT; y++){
+            cell = get_cell(&board, x, y);
+            cell->occupied = false;
+            cell->targeted = false;
+        }
+		//board.rows[i].occupied = false;
+		//board.rows[i].targeted = false;
 	}
 	return board;
 }
 
 
 Cell* get_cell(Board* board, int row, int col){
-	return &(Board->rows[row].cells[width])
+	return &((board->rows[row]).cells[col]);
 }
 
 void advance(int* row, int* col, int orientation) {
