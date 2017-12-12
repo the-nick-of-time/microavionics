@@ -17,10 +17,10 @@ bool startup_usart(void){
 	// FOSC = 16 MHz for this microcontroller
 	// Baud rate is 9600
 	SPBRG1 = BR_9600;
-  // Transmit interrupt is low priority when it is enabled
+	// Transmit interrupt is low priority when it is enabled
 	IPR1bits.TX1IP = 0;
 	PIR1bits.TX1IF = 0;
-  // Recieve interrupt is low priority when it is enabled
+	// Recieve interrupt is low priority when it is enabled
 	PIR1bits.RC1IF = 0;
 	IPR1bits.RC1IP = 0;
 	return true;
@@ -29,23 +29,24 @@ bool startup_usart(void){
 
 bool tx_mode(void) {
 	PIE1bits.TX1IE = 1;
-  // Turn off recieve
+	// Turn off recieve
 	PIE1bits.RC1IE = 0;
 	return MY_TURN;
 }
 
 bool rx_mode(void) {
 	PIE1bits.RC1IE = 1;
-  // Turn off send
+	// Turn off send
 	PIE1bits.TX1IE = 0;
 	return THEIR_TURN;
 }
 
 
 bool send_target(Target t) {
-  // TARGET NEEDS TO BE <=8 BITS, I DON'T FORSEE IT CHANGING THOUGH SO IT SHOULD BE FINE
+	// TARGET NEEDS TO BE <=8 BITS, I DON'T FORSEE IT CHANGING THOUGH SO IT SHOULD BE FINE
 	while (!PIR1bits.TX1IF) {}
-	TXREG1 = (unsigned char) t;
+	// ERROR
+	TXREG1 = t;
 	return true;
 }
 
@@ -54,16 +55,18 @@ Target receive_target(void) {
 	PIR1bits.RC1IF = 0;
 	if (FRAMING_ERROR) {
 		// Clear and ignore due to framing error
+		// ERROR
 		temp = RCREG1;
 		temp.error = 0b01;
 		return temp;
 	} else if (OVERRUN_ERROR) {
-    // Reset due to overflow
+		// Reset due to overflow
 		RCSTA1bits.CREN = 0;
 		RCSTA1bits.CREN = 1;
 		temp.error = 0b10;
 		return temp;
 	} else {
+		// ERROR
 		temp = RCREG1;
 		temp.error = 0b00;
 		return temp;
@@ -73,10 +76,10 @@ Target receive_target(void) {
 
 bool end_game(Board* board) {
 	int i;
-	Cell c;
+	Cell* c;
 	for (i = 0; i < WIDTH*HEIGHT; i++) {
-		c = board->cells[i];
-		if (c.occupied && !c.targeted){
+		c = get_cell(board, i%WIDTH, i/WIDTH);
+		if (c->occupied && !c->targeted){
 			return false;
 		}
 	}
@@ -85,17 +88,18 @@ bool end_game(Board* board) {
 
 
 Handshake send_confirmation(Board* board, Target targeted) {
-	Cell c;
+	Cell* c;
 	Handshake rv;
 	c = get_cell(board, targeted.row, targeted.col);
-	c.targeted = true;
-	if (c.occupied) {
+	c->targeted = true;
+	if (c->occupied) {
 		rv.hit = true;
 	}
 	rv.gameover = end_game(board);
 	rv.error = 0;
 	// COPIED FROM SEND_TARGET
 	while (!PIR1bits.TX1IF) {}
+	// ERROR
 	TXREG1 = rv;
 	// /END COPIED CODE
 	return rv;
@@ -105,20 +109,22 @@ Handshake send_confirmation(Board* board, Target targeted) {
 Handshake receive_confirmation(Board* board, Target targeted) {
 	Cell* c;
 	Handshake h;
-  // MINOR MODIFICATIONS FROM RECEIVE_TARGET
+	// MINOR MODIFICATIONS FROM RECEIVE_TARGET
 	PIR1bits.RC1IF = 0;
 	if (FRAMING_ERROR) {
 		// Clear and ignore due to framing error
-		h = (Handshake) RCREG1;
+		// ERROR
+		h = RCREG1;
 		h.error = 0b01;
 		return h;
 	} else if (OVERRUN_ERROR) {
-    // Reset due to overflow
+		// Reset due to overflow
 		RCSTA1bits.CREN = 0;
 		RCSTA1bits.CREN = 1;
 		h.error = 0b10;
 		return h;
 	} else {
+		// ERROR
 		h = RCREG1;
 		h.error = 0b00;
 	}

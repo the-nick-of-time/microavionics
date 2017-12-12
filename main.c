@@ -10,18 +10,23 @@
 
 void main(void) {
 	// 1 for your turn/transmit mode; 0 for the other person's turn/recieve mode
-	bool mode;
+	bool mode = MY_TURN;
 	// bool success;
 	Target target;
-	Cell cell;
+	Cell* cell;
 	Board myBoard = create_board();
-//	Board theirBoard = blank_board();
+	//Board theirBoard = blank_board();
+	char i;
 	// keep on trying to start up things until they succeed
 	while (!startup_glcd()){}
-//	while (!startup_usart()){}
-    draw_board(&myBoard);
+	while (!startup_usart()){}
+	for (i = 0; i < 64; i++) {
+		cell = get_cell(&myBoard, i%WIDTH, i/WIDTH);
+		cell->targeted = true;
+	}
 	// main loop
 	while (1) {
+		draw_board(&myBoard);
 //		if (mode == MY_TURN) {
 //			target = determine_target();
 //			send_target(target);
