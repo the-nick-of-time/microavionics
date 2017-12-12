@@ -4,6 +4,11 @@
 
 #define BR_9600 103
 
+Target char_to_target(char c);
+char target_to_char(Target t);
+Handshake char_to_handshake(char c);
+char handshake_to_char(Handshake h);
+
 bool startup_usart(void){
 	// Set tris bits
 	TRISC = 0b10000000;
@@ -46,7 +51,7 @@ bool send_target(Target t) {
 	// TARGET NEEDS TO BE <=8 BITS, I DON'T FORSEE IT CHANGING THOUGH SO IT SHOULD BE FINE
 	while (!PIR1bits.TX1IF) {}
 	// ERROR
-	TXREG1 = t;
+	TXREG1 = target_to_char(t);
 	return true;
 }
 
@@ -56,7 +61,7 @@ Target receive_target(void) {
 	if (FRAMING_ERROR) {
 		// Clear and ignore due to framing error
 		// ERROR
-		temp = RCREG1;
+		temp = char_to_target(RCREG1);
 		temp.error = 0b01;
 		return temp;
 	} else if (OVERRUN_ERROR) {
@@ -67,7 +72,7 @@ Target receive_target(void) {
 		return temp;
 	} else {
 		// ERROR
-		temp = RCREG1;
+		temp = char_to_target(RCREG1);
 		temp.error = 0b00;
 		return temp;
 	}
@@ -100,7 +105,7 @@ Handshake send_confirmation(Board* board, Target targeted) {
 	// COPIED FROM SEND_TARGET
 	while (!PIR1bits.TX1IF) {}
 	// ERROR
-	TXREG1 = rv;
+	TXREG1 = handshake_to_char(rv);
 	// /END COPIED CODE
 	return rv;
 }
@@ -114,7 +119,7 @@ Handshake receive_confirmation(Board* board, Target targeted) {
 	if (FRAMING_ERROR) {
 		// Clear and ignore due to framing error
 		// ERROR
-		h = RCREG1;
+		h = char_to_handshake(RCREG1);
 		h.error = 0b01;
 		return h;
 	} else if (OVERRUN_ERROR) {
@@ -125,7 +130,7 @@ Handshake receive_confirmation(Board* board, Target targeted) {
 		return h;
 	} else {
 		// ERROR
-		h = RCREG1;
+		h = char_to_handshake(RCREG1);
 		h.error = 0b00;
 	}
 	// /END COPIED CODE
@@ -135,4 +140,36 @@ Handshake receive_confirmation(Board* board, Target targeted) {
 		c->occupied = true;
 	}
 	return h;
+}
+
+
+
+
+Target char_to_target(char c) {
+	Target rv;
+	rv.row = c & 0x07;
+	rv.col = (c & 0x38) >> 3;
+	rv.error = (c & 0xC0) >> 6;
+	return rv;
+}
+
+char target_to_char(Target t) {
+	char rv;
+	rv = t.row + (t.col << 3) + (t.error << 6);
+	return rv;
+}
+
+
+Handshake char_to_handshake(char c) {
+	Handshake rv;
+	rv.hit = c & 0x01;
+	rv.gameover = (c & 0x02) >> 1;
+	rv.error = (c & 0xFC) >> 2;
+	return rv;
+}
+
+char handshake_to_char(Handshake h) {
+	char rv;
+	rv = h.hit + (h.gameover << 1) + (h.error << 2);
+	return rv;
 }

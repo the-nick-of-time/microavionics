@@ -2,14 +2,13 @@
 #include "targeting.h"
 #include "bool.h"
 
-#define ROWPORT PORTH
-#define COLPORT PORTJ
+#define ROWPORT PORTJ
+#define COLPORT PORTE
 
 Target determine_target(void) {
 	bool rowfound = false, colfound = false;
 	Target target;
 	while (!rowfound) {
-		while (!ROWPORT) {}
 		switch (ROWPORT) {
 			case 1:
 				target.row = 0;
@@ -45,13 +44,11 @@ Target determine_target(void) {
 				break;
 			default:
 	      // More than one button was pressed
-				// target.error = 0b11;
-				// return target;
+                Nop();
 				break;
 		}
 	}
-	while (!colfound) {
-		while (!COLPORT) {}
+ 	while (!colfound) {
 		switch (COLPORT) {
 			case 1:
 				target.col = 0;
