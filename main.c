@@ -10,13 +10,19 @@
 
 void main(void) {
 	// 1 for your turn/transmit mode; 0 for the other person's turn/recieve mode
+<<<<<<< HEAD
+	bool mode = THEIR_TURN;
+=======
 	bool mode;
+>>>>>>> 9dd49353480de15cea8a9be9ad30d942f977e834
 	// bool success;
 	Target target;
 	Cell* cell;
 	Board myBoard = create_board();
 	//Board theirBoard = blank_board();
 	char i;
+    char my_turn[] = {'M','Y',' ','T','U','R','N','\0'};
+    char their_turn[] = {'T','H','E','I','R',' ','T','U','R','N','\0'};
 	// keep on trying to start up things until they succeed
 	while (!startup_glcd()){}
 	while (!startup_usart()){}
@@ -30,16 +36,31 @@ void main(void) {
 	// main loop
 	while (1) {
 		draw_board(&myBoard);
+<<<<<<< HEAD
+ //       target = determine_target();
+//        cell = get_cell(&myBoard, target.row, target.col);
+//        cell->targeted = true;
+ //       send_target(target);
+		if (mode == MY_TURN) {
+            LATF = 0xF0;
+            write_string(my_turn, 7+64, 3);
+=======
         Nop();
 		if (mode == MY_TURN) {
 //            write_string("MY TURN", 64+7, 3);
+>>>>>>> 9dd49353480de15cea8a9be9ad30d942f977e834
 			target = determine_target();
 			send_target(target);
             LATF = 0xF0;
             mode = THEIR_TURN;
 		}
 		else {
+<<<<<<< HEAD
+            LATF = 0x0F;
+            write_string(their_turn, 7+64, 3);
+=======
 //            write_string("THEIR TURN", 64+7, 3);
+>>>>>>> 9dd49353480de15cea8a9be9ad30d942f977e834
 			do {
 				target = receive_target();
 			} while (target.error);
