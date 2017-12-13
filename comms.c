@@ -28,6 +28,8 @@ bool startup_usart(void){
 	// Recieve interrupt is low priority when it is enabled
 	PIR1bits.RC1IF = 0;
 	IPR1bits.RC1IP = 0;
+    PIE1bits.TX1IE = 0;
+    PIE1bits.RC1IE = 0;
 	return true;
 }
 
@@ -57,6 +59,7 @@ bool send_target(Target t) {
 
 Target receive_target(void) {
 	Target temp;
+    while(!PIR1bits.RC1IF){}
 	PIR1bits.RC1IF = 0;
 	if (FRAMING_ERROR) {
 		// Clear and ignore due to framing error

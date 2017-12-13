@@ -10,7 +10,7 @@
 
 void main(void) {
 	// 1 for your turn/transmit mode; 0 for the other person's turn/recieve mode
-	bool mode = MY_TURN;
+	bool mode;
 	// bool success;
 	Target target;
 	Cell* cell;
@@ -22,33 +22,33 @@ void main(void) {
 	while (!startup_usart()){}
     TRISJ = 0xFF;
     TRISF = 0x00;
+    LATF = 0x00;
     TRISE = 0xFF;
-//	for (i = 0; i < 64; i++) {
-//		cell = get_cell(&myBoard, i%WIDTH, i/WIDTH);
-//		cell->targeted = true;
-//	}
+//    cell = get_cell(&myBoard, 0, 0);
+//    cell->targeted = false;
+    mode = MY_TURN;
 	// main loop
 	while (1) {
 		draw_board(&myBoard);
-        target = determine_target();
-//        cell = get_cell(&myBoard, target.row, target.col);
-//        cell->targeted = true;
-        send_target(target);
+        Nop();
 		if (mode == MY_TURN) {
+//            write_string("MY TURN", 64+7, 3);
 			target = determine_target();
 			send_target(target);
-//			receive_confirmation(&theirBoard, target); // if there is an error, it will get stuck forever
-//			mode = rx_mode();
+            LATF = 0xF0;
             mode = THEIR_TURN;
 		}
 		else {
+//            write_string("THEIR TURN", 64+7, 3);
 			do {
 				target = receive_target();
 			} while (target.error);
-//			send_confirmation(&myBoard, target); // if there is an error, it will get stuck forever
-//			mode = tx_mode();
-            cell = get_cell(&myBoard, target.row, target.col);
-            cell->targeted = true;
+//            target.row = 5;
+//            target.col = 6;
+//            target.error = 0;
+//            cell = get_cell(&myBoard, target.row, target.col);
+//            cell->targeted = true;
+            LATF = 0x0F;
             mode = MY_TURN;
 		}
 	}
