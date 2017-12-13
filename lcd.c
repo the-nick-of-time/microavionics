@@ -1,5 +1,6 @@
 #include <p18cxxx.h>
 #include <delays.h>
+#include <string.h>
 #include "lcd.h"
 #include "bool.h"
 
@@ -77,43 +78,43 @@ bool startup_glcd(void){
 // Print a string on the GLCD starting at x and y
 bool write_string(char* string, int col, int page){
     unsigned char i;
-    char data[];
+    char data[15];
     for(i=0; string[i]!=0x00;i++){
         switch (string[i]) {
             case 'M':
-                data = {0xFF,0x06,0x18,0x06,0xFF};
+                strcpy(data,"\xFF\x06\x18\x06\xFF");
                 break;
             case 'Y':
-                data = {0x01,0x06,0xF8,0x06,0x01};
+                strcpy(data,"\x01\x06\xF8\x06\x01");
                 break;
             case ' ':
-                data = {0x00,0x00,0x00,0x00,0x00};
+                strcpy(data,"\x00\x00\x00\x00\x00");
                 break;
             case 'T':
-                data = {0x01,0x01,0xFF,0x01,0x01};
+                strcpy(data,"\x01\x01\xFF\x01\x01");
                 break;
             case 'U':
-                data = {0x0F,0x70,0x80,0x70,0x0F};
+                strcpy(data,"\x0F\x70\x80\x70\x0F");
                 break;
             case 'R':
-                data = {0xFF,0x11,0x31,0x4A,0x84};
+                strcpy(data,"\xFF\x11\x31\x4A\x84");
                 break;
             case 'N':
-                data = {0xFF,0x06,0x18,0x60,0xFF};
+                strcpy(data,"\xFF\x06\x18\x60\xFF");
                 break;
             case 'H':
-                data = {0xFF,0x18,0x18,0x18,0xFF};
+                strcpy(data,"\xFF\x18\x18\x18\xFF");
                 break;
             case 'E':
-                data = {0xFF,0xDB,0xDB,0xDB,0xDB};
+                strcpy(data,"\xFF\xDB\xDB\xDB\xDB");
                 break;
             case 'I':
-                data = {0x81,0x81,0xFF,0x81,0x81};
+                strcpy(data,"\x81\x81\xFF\x81\x81");
                 break;    
             default:
                 break;
         }
-        disp_char(data,col+5*j,page);
+        disp_char(data,col+5*i,page);
     }
 }
 
