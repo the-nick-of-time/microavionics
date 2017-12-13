@@ -58,6 +58,7 @@ void SetPage(unsigned char page);
 void SetCursor(unsigned char col, unsigned char page);
 void ClearLine(unsigned char page, unsigned char half);
 void ClearGLCD( void );
+void disp_char(char data[],int col,int page);
 
 
 // Initialize the GLCD, return true when done successfully
@@ -74,8 +75,55 @@ bool startup_glcd(void){
     return true;
 }
 // Print a string on the GLCD starting at x and y
-//bool write_string(char* string, int x, int y);
+bool write_string(char* string, int col, int page){
+    unsigned char i;
+    char data[];
+    for(i=0; string[i]!=0x00;i++){
+        switch (string[i]) {
+            case 'M':
+                data = {0xFF,0x06,0x18,0x06,0xFF};
+                break;
+            case 'Y':
+                data = {0x01,0x06,0xF8,0x06,0x01};
+                break;
+            case ' ':
+                data = {0x00,0x00,0x00,0x00,0x00};
+                break;
+            case 'T':
+                data = {0x01,0x01,0xFF,0x01,0x01};
+                break;
+            case 'U':
+                data = {0x0F,0x70,0x80,0x70,0x0F};
+                break;
+            case 'R':
+                data = {0xFF,0x11,0x31,0x4A,0x84};
+                break;
+            case 'N':
+                data = {0xFF,0x06,0x18,0x60,0xFF};
+                break;
+            case 'H':
+                data = {0xFF,0x18,0x18,0x18,0xFF};
+                break;
+            case 'E':
+                data = {0xFF,0xDB,0xDB,0xDB,0xDB};
+                break;
+            case 'I':
+                data = {0x81,0x81,0xFF,0x81,0x81};
+                break;    
+            default:
+                break;
+        }
+        disp_char(data,col+5*j,page);
+    }
+}
 
+void disp_char(char data[],int col,int page){
+    unsigned char j;
+    for(j=0; j<5; j++){
+        SetCursor(col+j,page);
+        WriteData(data[j]);
+    }
+}
 // Draws the whole board, probably will only be called at the beginning on the empty board
 bool draw_board(Board* board){
     unsigned char x;
