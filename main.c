@@ -33,14 +33,14 @@ void main(void) {
 		Nop();
 		if (mode == MY_TURN) {
 			LATF = 0xF0;
-			write_string(myturn, 64+7, 3);
+			// write_string(myturn, 64+7, 3);
 			target = determine_target();
 			send_target(target);
 			mode = THEIR_TURN;
 		}
 		else {
 			LATF = 0x0F;
-			write_string(theirturn, 64+7, 3);
+			// write_string(theirturn, 64+7, 3);
 			do {
 				target = receive_target();
 			} while (target.error);
