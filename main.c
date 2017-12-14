@@ -15,8 +15,8 @@ void main(void) {
 	Cell* cell;
 	Board myBoard;
 	char i;
-	char my_turn[] = {'M','Y',' ','T','U','R','N','\0'};
-	char their_turn[] = {'T','H','E','I','R',' ','T','U','R','N','\0'};
+	char myturn[] = {'M','Y',' ','T','U','R','N','\0'};
+	char theirturn[] = {'T','H','E','I','R',' ','T','U','R','N','\0'};
 	// keep on trying to start up things until they succeed
 	while (!startup_glcd()){}
 	while (!startup_usart()){}
@@ -31,14 +31,14 @@ void main(void) {
 		draw_board(&myBoard);
 		if (mode == MY_TURN) {
 			LATF = 0xF0;
-			write_string("MY TURN", 64+7, 3);
+			write_string(myturn, 64+7, 3);
 			target = determine_target();
 			send_target(target);
 			mode = THEIR_TURN;
 		}
 		else {
 			LATF = 0x0F;
-			write_string("THEIR TURN", 64+7, 3);
+			write_string(theirturn, 64+7, 3);
 			do {
 				target = receive_target();
 			} while (target.error);
