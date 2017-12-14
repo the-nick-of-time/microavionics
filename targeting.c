@@ -2,8 +2,13 @@
 #include "targeting.h"
 #include "bool.h"
 
-#define ROWPORT PORTJ
-#define COLPORT PORTE
+
+bool startup_targeting(void) {
+	ROWTRIS = 0xFF;
+	COLTRIS = 0xFF;
+	return true;
+}
+
 
 Target determine_target(void) {
 	bool rowfound = false, colfound = false;

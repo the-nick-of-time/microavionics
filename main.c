@@ -19,17 +19,18 @@ void main(void) {
 	// keep on trying to start up things until they succeed
 	while (!startup_glcd()){}
 	while (!startup_usart()){}
-	TRISJ = 0xFF;
+	while (!startup_targeting()){}
+  // DEBUGGING
 	TRISF = 0x00;
 	LATF = 0x00;
-	TRISE = 0xFF;
+  // /DEBUGGING
 	myBoard = create_board();
-    // note: if this moves before "myBoard = create_board();", mode gets corrupted
-    mode = MY_TURN;
+	// note: if this moves before "myBoard = create_board();", mode gets corrupted
+	mode = MY_TURN;
 	// main loop
 	while (1) {
 		draw_board(&myBoard);
-        Nop();
+		Nop();
 		if (mode == MY_TURN) {
 			LATF = 0xF0;
 			// write_string(myturn, 64+7, 3);
@@ -43,8 +44,8 @@ void main(void) {
 			do {
 				target = receive_target();
 			} while (target.error);
-            cell = get_cell(&myBoard, target.row, target.col);
-            cell->targeted = true;
+			cell = get_cell(&myBoard, target.row, target.col);
+			cell->targeted = true;
 			mode = MY_TURN;
 		}
 	}
