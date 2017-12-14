@@ -71,7 +71,7 @@ bool startup_glcd(void){
     GLCD_E_TRIS = 0;
     GLCD_RST_TRIS = 0;
     GLCD_DATA_TRIS = 0;
-    
+
     InitGLCD();
     return true;
 }
@@ -82,38 +82,39 @@ bool write_string(char* string, int col, int page){
     for(i=0; string[i]!=0x00;i++){
         switch (string[i]) {
             case 'M':
-                strcpy(data,"\xFF\x06\x18\x06\xFF");
+                data[0]=0xFF;data[1]=0x06;data[2]=0x18;data[3]=0x06;data[4]=0xFF;
                 break;
             case 'Y':
-                strcpy(data,"\x01\x06\xF8\x06\x01");
+                data[0]=0x01;data[1]=0x06;data[2]=0xF8;data[3]=0x06;data[4]=0x01;
                 break;
             case ' ':
-                strcpy(data,"\x00\x00\x00\x00\x00");
+                data[0]=0x00;data[1]=0x00;data[2]=0x00;data[3]=0x00;data[4]=0x00;
                 break;
             case 'T':
-                strcpy(data,"\x01\x01\xFF\x01\x01");
+                data[0]=0x01;data[1]=0x01;data[2]=0xFF;data[3]=0x01;data[4]=0x01;
                 break;
             case 'U':
-                strcpy(data,"\x0F\x70\x80\x70\x0F");
+                data[0]=0x0F;data[1]=0x70;data[2]=0x80;data[3]=0x70;data[4]=0x0F;
                 break;
             case 'R':
-                strcpy(data,"\xFF\x11\x31\x4A\x84");
+                data[0]=0xFF;data[1]=0x11;data[2]=0x31;data[3]=0x4A;data[4]=0x84;
                 break;
             case 'N':
-                strcpy(data,"\xFF\x06\x18\x60\xFF");
+                data[0]=0xFF;data[1]=0x06;data[2]=0x18;data[3]=0x60;data[4]=0xFF;
                 break;
             case 'H':
-                strcpy(data,"\xFF\x18\x18\x18\xFF");
+                data[0]=0xFF;data[1]=0x18;data[2]=0x18;data[3]=0x18;data[4]=0xFF;
                 break;
             case 'E':
-                strcpy(data,"\xFF\xDB\xDB\xDB\xDB");
+                data[0]=0xFF;data[1]=0xDB;data[2]=0xDB;data[3]=0xDB;data[4]=0xDB;
                 break;
             case 'I':
-                strcpy(data,"\x81\x81\xFF\x81\x81");
-                break;    
+                data[0]=0x81;data[1]=0x81;data[2]=0xFF;data[3]=0x81;data[4]=0x81;
+                break;
             default:
                 break;
         }
+        Nop();
         disp_char(data,col+5*i,page);
     }
 }
@@ -248,7 +249,7 @@ bool draw_cell(Cell cell, char x, char y){
 			default:
 				break;
             }
-        }    
+        }
     }
 }
 
@@ -263,18 +264,18 @@ bool draw_cell(Cell cell, char x, char y){
 void WriteData(unsigned char data){
     GLCD_RS_LAT = 1;      // RS must be logic HIGH with RW logic LOW to tell the
     GLCD_RW_LAT = 0;      // GLCD that data is being written to it.
-    
+
     GLCD_DATA_LAT = data; // Set the Data LAT line to the data input.
-    
+
     Delay1TCY();Delay1TCY();Delay1TCY();Delay1TCY(); // Delay 1 us
-    
+
     Enable();
 }
 
 /******************************************************************************
  *     Function Name:	Enable
  *     Parameters:      None
- *     Description:		This function switches the EN pin of the GLCD to enable 
+ *     Description:		This function switches the EN pin of the GLCD to enable
  *                      data or an instruction
  *
  ******************************************************************************/
@@ -283,7 +284,7 @@ void Enable( void ){
     Delay10TCYx( EnableDelayCount_ ); // Delay 5 us
     GLCD_E_LAT = 0;  // and then driven logic LOW to submit the command.
     Delay10TCYx( EnableDelayCount_ );
-    
+
 }
 
 /******************************************************************************
@@ -323,7 +324,7 @@ void SetColumn(unsigned char col){
         GLCD_CS0_LAT = 1;
         GLCD_CS1_LAT = 0;
         col = col - 64; // No matter what, both controllers need a value 0 - 63.
-    }                      
+    }
     col = (col | 0x40) & 0x7F; // To set Y address (column), DB7 must be LOW and
     GLCD_DATA_LAT = col;        // DB6 must be HIGH - hence the OR. Then the AND
     Enable();                   // sets the col values and retains the previous
@@ -332,7 +333,7 @@ void SetColumn(unsigned char col){
 /******************************************************************************
  *     Function Name:	SetPage
  *     Parameters:      unsigned char page
- *     Description:		This function sets the page of the GLCD. Can be from 0 
+ *     Description:		This function sets the page of the GLCD. Can be from 0
  *                      to 7.
  *
  ******************************************************************************/
@@ -369,7 +370,7 @@ void SetCursor(unsigned char col, unsigned char page){
 void ClearLine(unsigned char page, unsigned char half){
     unsigned char i;
     if(half == 0){          // Half 0 is the left side of the GLCD.
-        GLCD_CS0_LAT = 0;   
+        GLCD_CS0_LAT = 0;
         GLCD_CS1_LAT = 1;
         for(i=0;i<65;i++){      // Loop through every column of the chosen page.
             SetCursor(i,page);  // Set page and column.
