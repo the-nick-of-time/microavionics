@@ -14,8 +14,11 @@ void main(void) {
 	// bool success;
 	Target target;
 	Cell* cell;
-	Board myBoard;
-    myBoard = create_board();
+	Board myBoard = create_board();
+	//Board theirBoard = blank_board();
+	char i;
+    char my_turn[] = {'M','Y',' ','T','U','R','N','\0'};
+    char their_turn[] = {'T','H','E','I','R',' ','T','U','R','N','\0'};
 	// keep on trying to start up things until they succeed
 	while (!startup_glcd()){}
 	while (!startup_usart()){}
@@ -30,6 +33,7 @@ void main(void) {
 		if (mode == MY_TURN) {
             LATF = 0xF0;
             //write_string("MY TURN", 64+7, 3);
+>>>>>>> refs/remotes/origin/master
 			target = determine_target();
 			send_target(target);
             mode = THEIR_TURN;
@@ -37,6 +41,7 @@ void main(void) {
 		else {
             //write_string("THEIR TURN", 64+7, 3);
             LATF = 0x0F;
+>>>>>>> refs/remotes/origin/master
 			do {
 				target = receive_target();
 			} while (target.error);
