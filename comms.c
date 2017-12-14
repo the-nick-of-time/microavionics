@@ -53,13 +53,13 @@ bool send_target(Target t) {
 	// TARGET NEEDS TO BE <=8 BITS, I DON'T FORSEE IT CHANGING THOUGH SO IT SHOULD BE FINE
 	while (!PIR1bits.TX1IF) {}
 	TXREG1 = target_to_char(t);
-    PIR1bits.TX1IF = 0;
+	PIR1bits.TX1IF = 0;
 	return true;
 }
 
 Target receive_target(void) {
 	Target temp;
-    while(!PIR1bits.RC1IF){}
+	while(!PIR1bits.RC1IF){}
 	PIR1bits.RC1IF = 0;
 	if (FRAMING_ERROR) {
 		// Clear and ignore due to framing error

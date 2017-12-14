@@ -11,46 +11,38 @@
 void main(void) {
 	// 1 for your turn/transmit mode; 0 for the other person's turn/recieve mode
 	bool mode;
-	// bool success;
 	Target target;
 	Cell* cell;
-	Board myBoard = create_board();
-	//Board theirBoard = blank_board();
+	Board myBoard;
 	char i;
-    char my_turn[] = {'M','Y',' ','T','U','R','N','\0'};
-    char their_turn[] = {'T','H','E','I','R',' ','T','U','R','N','\0'};
+	char my_turn[] = {'M','Y',' ','T','U','R','N','\0'};
+	char their_turn[] = {'T','H','E','I','R',' ','T','U','R','N','\0'};
 	// keep on trying to start up things until they succeed
 	while (!startup_glcd()){}
 	while (!startup_usart()){}
-    TRISJ = 0xFF;
-    TRISF = 0x00;
-    LATF = 0x00;
-    TRISE = 0xFF;
-    mode = MY_TURN;
+	TRISJ = 0xFF;
+	TRISF = 0x00;
+	LATF = 0x00;
+	TRISE = 0xFF;
+	mode = MY_TURN;
+	myBoard = create_board();
 	// main loop
 	while (1) {
 		draw_board(&myBoard);
 		if (mode == MY_TURN) {
-            LATF = 0xF0;
-            //write_string("MY TURN", 64+7, 3);
->>>>>>> refs/remotes/origin/master
+			LATF = 0xF0;
+			write_string("MY TURN", 64+7, 3);
 			target = determine_target();
 			send_target(target);
-            mode = THEIR_TURN;
+			mode = THEIR_TURN;
 		}
 		else {
-            //write_string("THEIR TURN", 64+7, 3);
-            LATF = 0x0F;
->>>>>>> refs/remotes/origin/master
+			LATF = 0x0F;
+			write_string("THEIR TURN", 64+7, 3);
 			do {
 				target = receive_target();
 			} while (target.error);
-//            target.row = 5;
-//            target.col = 6;
-//            target.error = 0;
-//            cell = get_cell(&myBoard, target.row, target.col);
-//            cell->targeted = true;
-            mode = MY_TURN;
+			mode = MY_TURN;
 		}
 	}
 }
