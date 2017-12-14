@@ -52,8 +52,8 @@ bool rx_mode(void) {
 bool send_target(Target t) {
 	// TARGET NEEDS TO BE <=8 BITS, I DON'T FORSEE IT CHANGING THOUGH SO IT SHOULD BE FINE
 	while (!PIR1bits.TX1IF) {}
-	// ERROR
 	TXREG1 = target_to_char(t);
+    PIR1bits.TX1IF = 0;
 	return true;
 }
 
@@ -63,7 +63,6 @@ Target receive_target(void) {
 	PIR1bits.RC1IF = 0;
 	if (FRAMING_ERROR) {
 		// Clear and ignore due to framing error
-		// ERROR
 		temp = char_to_target(RCREG1);
 		temp.error = 0b01;
 		return temp;
@@ -74,7 +73,6 @@ Target receive_target(void) {
 		temp.error = 0b10;
 		return temp;
 	} else {
-		// ERROR
 		temp = char_to_target(RCREG1);
 		temp.error = 0b00;
 		return temp;
@@ -121,7 +119,6 @@ Handshake receive_confirmation(Board* board, Target targeted) {
 	PIR1bits.RC1IF = 0;
 	if (FRAMING_ERROR) {
 		// Clear and ignore due to framing error
-		// ERROR
 		h = char_to_handshake(RCREG1);
 		h.error = 0b01;
 		return h;
@@ -132,7 +129,6 @@ Handshake receive_confirmation(Board* board, Target targeted) {
 		h.error = 0b10;
 		return h;
 	} else {
-		// ERROR
 		h = char_to_handshake(RCREG1);
 		h.error = 0b00;
 	}
