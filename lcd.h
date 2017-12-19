@@ -4,7 +4,6 @@
 #include "targeting.h"
 #include "board.h"
 #include "bool.h"
-#include <delays.h>
 
 // Initialize the GLCD, return true when done successfully
 bool startup_glcd(void);

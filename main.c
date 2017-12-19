@@ -31,12 +31,16 @@ void main(void) {
 	mode = MY_TURN;
 	// main loop
 	while (1) {
+    // redraw whole board
 		draw_board(&myBoard);
 		Nop();
 		if (mode == MY_TURN) {
+      // Mark as my turn
 			LATF = 0xF0;
 			// write_string(myturn, 64+7, 3);
+      // Wait for targeting input
 			target = determine_target();
+      // send that and say that it's their turn now
 			send_target(target);
 			mode = THEIR_TURN;
 		}
@@ -44,8 +48,10 @@ void main(void) {
 			LATF = 0x0F;
 			// write_string(theirturn, 64+7, 3);
 			do {
+        // wait for reciept
 				target = receive_target();
 			} while (target.error);
+      // mark cell as targeted
 			cell = get_cell(&myBoard, target.row, target.col);
 			cell->targeted = true;
 			mode = MY_TURN;

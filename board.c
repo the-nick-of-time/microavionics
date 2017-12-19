@@ -52,6 +52,7 @@ Board create_board(void){
 
 
 Board blank_board(void){
+	// Create a board with all cells guaranteed empty
 	Board board;
 	Cell* cell;
 	char x, y;
@@ -67,6 +68,7 @@ Board blank_board(void){
 
 
 Cell* get_cell(Board* board, int row, int col){
+	// Return a reference to a cell given its coordinates
 	return &(board->cells[row * WIDTH + col]);
 }
 

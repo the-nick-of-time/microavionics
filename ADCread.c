@@ -34,8 +34,10 @@ int pot_ADC(void){
 	Delay10TCYx(TACQ);
 	// Start the conversion
 	ADCON0bits.GO = 1;
+	// Wait until done
 	while (!PIR1bits.ADIF){}
 	PIR1bits.ADIF = 0;
+	// Turn back off and return value
 	ADCON0bits.ADON = 0;
 	return ADRES;
 }

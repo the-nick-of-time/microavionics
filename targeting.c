@@ -4,6 +4,7 @@
 
 
 bool startup_targeting(void) {
+	// Set targeting buttons as all inputs
 	ROWTRIS = 0xFF;
 	COLTRIS = 0xFF;
 	return true;
@@ -14,7 +15,9 @@ Target determine_target(void) {
 	bool rowfound = false, colfound = false;
 	Target target;
 	while (!rowfound) {
+		// poll row port for button presses
 		switch (ROWPORT) {
+			// Break out button presses, should be a 2^n
 			case 1:
 				target.row = 0;
 				rowfound = true;
@@ -48,12 +51,13 @@ Target determine_target(void) {
 				rowfound = true;
 				break;
 			default:
-	      // More than one button was pressed
-                Nop();
+				// More than one button was pressed, or no button pressed yet
+				Nop();
 				break;
 		}
 	}
- 	while (!colfound) {
+	while (!colfound) {
+		// poll column targeting port
 		switch (COLPORT) {
 			case 1:
 				target.col = 0;
@@ -88,7 +92,7 @@ Target determine_target(void) {
 				colfound = true;
 				break;
 			default:
-	      // More than one button was pressed
+				// More than one button was pressed or no button pressed yet
 				break;
 		}
 	}

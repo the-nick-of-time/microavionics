@@ -6,8 +6,6 @@
 
 Target char_to_target(char c);
 char target_to_char(Target t);
-Handshake char_to_handshake(char c);
-char handshake_to_char(Handshake h);
 
 bool startup_usart(void){
 	// Set tris bits
@@ -51,8 +49,11 @@ bool rx_mode(void) {
 
 bool send_target(Target t) {
 	// TARGET NEEDS TO BE <=8 BITS, I DON'T FORSEE IT CHANGING THOUGH SO IT SHOULD BE FINE
+	// wait until Tx is ready
 	while (!PIR1bits.TX1IF) {}
+	// Send
 	TXREG1 = target_to_char(t);
+	// mark as not ready
 	PIR1bits.TX1IF = 0;
 	return true;
 }
@@ -73,6 +74,7 @@ Target receive_target(void) {
 		temp.error = 0b10;
 		return temp;
 	} else {
+		// recieve successfully
 		temp = char_to_target(RCREG1);
 		temp.error = 0b00;
 		return temp;
@@ -93,82 +95,21 @@ bool end_game(Board* board) {
 }
 
 
-Handshake send_confirmation(Board* board, Target targeted) {
-	Cell* c;
-	Handshake rv;
-	c = get_cell(board, targeted.row, targeted.col);
-	c->targeted = true;
-	if (c->occupied) {
-		rv.hit = true;
-	}
-	rv.gameover = end_game(board);
-	rv.error = 0;
-	// COPIED FROM SEND_TARGET
-	while (!PIR1bits.TX1IF) {}
-	// ERROR
-	TXREG1 = handshake_to_char(rv);
-	// /END COPIED CODE
-	return rv;
-}
-
-
-Handshake receive_confirmation(Board* board, Target targeted) {
-	Cell* c;
-	Handshake h;
-	// MINOR MODIFICATIONS FROM RECEIVE_TARGET
-	PIR1bits.RC1IF = 0;
-	if (FRAMING_ERROR) {
-		// Clear and ignore due to framing error
-		h = char_to_handshake(RCREG1);
-		h.error = 0b01;
-		return h;
-	} else if (OVERRUN_ERROR) {
-		// Reset due to overflow
-		RCSTA1bits.CREN = 0;
-		RCSTA1bits.CREN = 1;
-		h.error = 0b10;
-		return h;
-	} else {
-		h = char_to_handshake(RCREG1);
-		h.error = 0b00;
-	}
-	// /END COPIED CODE
-	c = get_cell(board, targeted.row, targeted.col);
-	c->targeted = true;
-	if (h.hit) {
-		c->occupied = true;
-	}
-	return h;
-}
-
-
-
-
 Target char_to_target(char c) {
+	// Populate a Target struct given a char that was sent over usart
 	Target rv;
+	// Bottom 3 bits
 	rv.row = c & 0x07;
+	// middle 3 bits
 	rv.col = (c & 0x38) >> 3;
+	// upper 2 bits
 	rv.error = (c & 0xC0) >> 6;
 	return rv;
 }
 
 char target_to_char(Target t) {
+	// Pack a Target into a char manually
 	char rv;
 	rv = t.row + (t.col << 3) + (t.error << 6);
-	return rv;
-}
-
-
-Handshake char_to_handshake(char c) {
-	Handshake rv;
-	rv.hit = c & 0x01;
-	rv.gameover = (c & 0x02) >> 1;
-	rv.error = (c & 0xFC) >> 2;
-	return rv;
-}
-
-char handshake_to_char(Handshake h) {
-	char rv;
-	rv = h.hit + (h.gameover << 1) + (h.error << 2);
 	return rv;
 }
