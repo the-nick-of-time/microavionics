@@ -67,7 +67,7 @@ Board blank_board(void){
 
 
 Cell* get_cell(Board* board, int row, int col){
-	return &((board->rows[row]).cells[col]);
+	return &(board->cells[row * WIDTH + col]);
 }
 
 void advance(int* row, int* col, int orientation) {
