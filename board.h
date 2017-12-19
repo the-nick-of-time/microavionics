@@ -25,7 +25,7 @@ typedef struct {
 } Cell;
 
 typedef struct {
-  // 8 cells wide, fills 16 bits (4 times more space efficient than keeping them separate)
+	// 8 cells wide, fills 16 bits (4 times more space efficient than keeping them separate)
 	Cell cells[WIDTH];
 } Row;
 

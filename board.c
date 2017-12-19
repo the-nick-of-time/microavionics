@@ -1,6 +1,5 @@
 #include "board.h"
-// FOR DEBUGGING
-#include <stdio.h>
+#include "ADCread.h"
 
 
 Board create_board(void){
@@ -12,7 +11,7 @@ Board create_board(void){
 	bool orientationFound = false;
 	unsigned char x, y, orientation, i;
 	// Seed the RNG
-	srand(1029348);
+	srand(pot_ADC());
 	board = blank_board();
 	for (i = 0; i < 4; i++) {
 		ships[i].length = lengths[i];
@@ -54,16 +53,14 @@ Board create_board(void){
 
 Board blank_board(void){
 	Board board;
-    Cell* cell;
-    char x, y;
+	Cell* cell;
+	char x, y;
 	for (x = 0; x < WIDTH; x++) {
-        for (y = 0; y < HEIGHT; y++){
-            cell = get_cell(&board, x, y);
-            cell->occupied = false;
-            cell->targeted = false;
-        }
-		//board.rows[i].occupied = false;
-		//board.rows[i].targeted = false;
+		for (y = 0; y < HEIGHT; y++){
+			cell = get_cell(&board, x, y);
+			cell->occupied = false;
+			cell->targeted = false;
+		}
 	}
 	return board;
 }
@@ -100,7 +97,7 @@ void place_ship(Board* board, Ship ship){
 	/* Mark the cells on the board that are occupied by the ship */
 	Cell* c;
 	int row = ship.y, col = ship.x;
-    char i;
+	char i;
 	for (i = 0; i < ship.length; i++) {
 		c = get_cell(board, row, col);
 		c->occupied = true;
@@ -113,7 +110,7 @@ bool is_valid(Board* board, Ship ship){
 	/* Checks whether the ship can fit on the board in its current location and orientation */
 	Cell* c;
 	int row = ship.y, col = ship.x;
-    char i;
+	char i;
 	for (i = 0; i < ship.length; i++) {
 		if (row >= HEIGHT || row < 0 || col >= WIDTH || col < 0){
 			// off the board

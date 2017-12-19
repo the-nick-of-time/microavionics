@@ -4,6 +4,7 @@
 #include "targeting.h"
 #include "comms.h"
 #include "bool.h"
+#include "ADCread.h"
 
 #pragma config FOSC=HS1, PWRTEN=ON, BOREN=ON, BORV=2, PLLCFG=OFF
 #pragma config WDTEN=OFF, CCP2MX=PORTC, XINST=OFF
@@ -20,10 +21,11 @@ void main(void) {
 	while (!startup_glcd()){}
 	while (!startup_usart()){}
 	while (!startup_targeting()){}
-  // DEBUGGING
+	while (!startup_ADC()){}
+	// DEBUGGING
 	TRISF = 0x00;
 	LATF = 0x00;
-  // /DEBUGGING
+	// /DEBUGGING
 	myBoard = create_board();
 	// note: if this moves before "myBoard = create_board();", mode gets corrupted
 	mode = MY_TURN;
